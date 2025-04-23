@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Tile Game</title>
+  <link rel="stylesheet" href="dan-wordgameV5.css"> <!-- Link to external CSS file -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="instruction">Rearrange the tiles up and down in each column only so that each row spells a four-letter word. Tiles cannot be rearranged along the rows.</div>
+  <!-- <div id="puzzles-solved-counter">Puzzles Solved: 0</div> -->
+  <!-- <div id="tile-change-counter">Tile Changes (This Puzzle): 0</div> -->
+  <!-- <div id="total-tile-change-counter">Total Tile Changes: 0</div>   -->
+  <div id="game-container"></div>
+  <button id="new-puzzle-btn">New Puzzle</button>
+  <button id="view-solution-btn">View Solution</button>
+  <div id="solution"></div> <!-- This will display the solution -->
+  
+  <script src="dictionary.js"></script> <!-- Dictionary for the game -->
+  <script src="dan-wordgame-V5.js"></script> <!-- Game logic -->
+</body>
+</html>
