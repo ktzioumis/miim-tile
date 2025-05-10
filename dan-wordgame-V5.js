@@ -161,7 +161,6 @@ function renderBoard() {
           [gameBoard[draggedRow][draggedColumn], gameBoard[targetRow][targetColumn]] =
             [gameBoard[targetRow][targetColumn], gameBoard[draggedRow][draggedColumn]];
 
-          
           // Re-render the board
           renderBoard();
 
