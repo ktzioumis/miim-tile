@@ -161,6 +161,31 @@ function renderBoard() {
           [gameBoard[draggedRow][draggedColumn], gameBoard[targetRow][targetColumn]] =
             [gameBoard[targetRow][targetColumn], gameBoard[draggedRow][draggedColumn]];
 
+          // ---- TOUCH SUPPORT ----
+    tileElement.addEventListener('touchstart', (e) => {
+      draggedTile = e.target;
+      e.target.classList.add('touch-dragging');
+      e.preventDefault(); // Prevent scroll
+    }, { passive: false });
+
+    tileElement.addEventListener('touchend', (e) => {
+      const touch = e.changedTouches[0];
+      const elementAtTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+
+      if (!elementAtTouch || !elementAtTouch.dataset) return;
+
+      const targetRow = parseInt(elementAtTouch.dataset.row);
+      const targetColumn = parseInt(elementAtTouch.dataset.column);
+
+      const draggedRow = parseInt(draggedTile.dataset.row);
+      const draggedColumn = parseInt(draggedTile.dataset.column);
+
+      if (targetColumn === draggedColumn) {
+        [gameBoard[draggedRow][draggedColumn], gameBoard[targetRow][targetColumn]] =
+          [gameBoard[targetRow][targetColumn], gameBoard[draggedRow][draggedColumn]];
+
+          
+
           // Re-render the board
           renderBoard();
 
