@@ -217,6 +217,7 @@ function renderBoard() {
       gameContainer.appendChild(tileElement);
     });
   });
+  console.log("Tiles rendered:", gameContainer.children.length);
 }
 
 // Listen for the "New Puzzle" button click to generate a new puzzle
