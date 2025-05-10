@@ -113,17 +113,15 @@ let lastMoveTile = null; // Track the last moved tile for visual change
 let isGenerating = false; // Flag to prevent generating a new puzzle while one is in progress
 
 function renderBoard() {
-  console.log("Rendering board...");  // Add a log to track function execution
-  
-  // Ensure the game container exists
+  console.log("Rendering board...");
+
   if (!gameContainer) {
     console.error("Game container not found!");
     return;
   }
-  
-  gameContainer.innerHTML = ''; // Clear previous board
-  
-  // If gameBoard is empty or undefined, log an error and exit
+
+  gameContainer.innerHTML = '';
+
   if (!gameBoard || gameBoard.length === 0) {
     console.error("Game board is empty or not initialized!");
     return;
@@ -137,6 +135,7 @@ function renderBoard() {
       tileElement.dataset.row = rowIndex;
       tileElement.dataset.column = columnIndex;
 
+      // --- Mouse Drag-and-Drop Support ---
       tileElement.ondragstart = (e) => {
         draggedTile = e.target;
       };
@@ -144,7 +143,7 @@ function renderBoard() {
       tileElement.ondragend = () => {};
 
       tileElement.ondragover = (e) => {
-        e.preventDefault(); // Allow dropping
+        e.preventDefault();
       };
 
       tileElement.ondrop = (e) => {
@@ -155,44 +154,61 @@ function renderBoard() {
         const draggedRow = parseInt(draggedTile.dataset.row);
         const draggedColumn = parseInt(draggedTile.dataset.column);
 
-        // Ensure drag-and-drop happens within the same column
         if (targetColumn === draggedColumn) {
-          // Swap tiles in the board array
           [gameBoard[draggedRow][draggedColumn], gameBoard[targetRow][targetColumn]] =
             [gameBoard[targetRow][targetColumn], gameBoard[draggedRow][draggedColumn]];
 
-          // Re-render the board
           renderBoard();
 
-          // Check if the current board matches any alternative solution
           const alternativeSolutions = findAlternativeColumnSolutions(gameBoard, dictionary, puzzleWords);
-
-          // If there's a matching alternative solution, prompt the user
           if (alternativeSolutions.length > 0) {
             const solutionMessage = `Congratulations! You found a solution: ${alternativeSolutions[0].join(', ')}`;
-            // const userConfirmation = confirm(`${solutionMessage}\nDo you want to keep this arrangement?`);
-
-            // if (userConfirmation) {
-            //   // Optionally, update the solution state or store the found solution
-            //   alert('You have kept the alternative solution!');
-            // } else {
-            //   // Revert the swap if the user decides not to keep it
-            //   [gameBoard[draggedRow][draggedColumn], gameBoard[targetRow][targetColumn]] =
-            //     [gameBoard[targetRow][targetColumn], gameBoard[draggedRow][draggedColumn]];
-
-            //   renderBoard(); // Re-render the board to revert the move
-            // }
+            // alert(solutionMessage); // Optional
           }
 
-          // Check solution after every move
           checkSolution();
         }
       };
+
+      // --- Touch Support for Mobile Devices ---
+      tileElement.addEventListener('touchstart', (e) => {
+        draggedTile = e.target;
+        e.preventDefault(); // Prevent scrolling
+      }, { passive: false });
+
+      tileElement.addEventListener('touchend', (e) => {
+        const touch = e.changedTouches[0];
+        const targetTile = document.elementFromPoint(touch.clientX, touch.clientY);
+
+        if (!targetTile || !targetTile.dataset) return;
+
+        const targetRow = parseInt(targetTile.dataset.row);
+        const targetColumn = parseInt(targetTile.dataset.column);
+
+        const draggedRow = parseInt(draggedTile.dataset.row);
+        const draggedColumn = parseInt(draggedTile.dataset.column);
+
+        if (targetColumn === draggedColumn) {
+          [gameBoard[draggedRow][draggedColumn], gameBoard[targetRow][targetColumn]] =
+            [gameBoard[targetRow][targetColumn], gameBoard[draggedRow][draggedColumn]];
+
+          renderBoard();
+
+          const alternativeSolutions = findAlternativeColumnSolutions(gameBoard, dictionary, puzzleWords);
+          if (alternativeSolutions.length > 0) {
+            const solutionMessage = `Congratulations! You found a solution: ${alternativeSolutions[0].join(', ')}`;
+            // alert(solutionMessage); // Optional
+          }
+
+          checkSolution();
+        }
+      });
 
       gameContainer.appendChild(tileElement);
     });
   });
 }
+
 
 // Listen for the "New Puzzle" button click to generate a new puzzle
 document.getElementById('new-puzzle-btn').addEventListener('click', () => {
